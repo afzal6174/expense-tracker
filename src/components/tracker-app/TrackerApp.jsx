@@ -7,8 +7,8 @@ export default function TrackerApp() {
   const [dataForEditing, setDataForEditing] = useState(null);
   const [incomeStatements, setIncomeStatements] = useState([]);
   const [expenseStatements, setExpenseStatements] = useState([]);
-  const [allIncomeStatements, setAllIncomeStatements] = useState([]);
-  const [allExpenseStatements, setAllExpenseStatements] = useState([]);
+  const [defaultIncomeStatements, setDefaultIncomeStatements] = useState([]);
+  const [defaultExpenseStatements, setDefaultExpenseStatements] = useState([]);
 
   function handleSave(transactionToSave) {
     if (dataForEditing) {
@@ -19,7 +19,7 @@ export default function TrackerApp() {
             : oldTransaction
         );
         setIncomeStatements(updatedIncomeStatements);
-        setAllIncomeStatements(updatedIncomeStatements);
+        setDefaultIncomeStatements(updatedIncomeStatements);
       } else {
         const updatedExpenseStatements = expenseStatements.map(
           (oldTransaction) =>
@@ -28,18 +28,18 @@ export default function TrackerApp() {
               : oldTransaction
         );
         setExpenseStatements(updatedExpenseStatements);
-        setAllExpenseStatements(updatedExpenseStatements);
+        setDefaultExpenseStatements(updatedExpenseStatements);
       }
       setDataForEditing(null);
     } else {
       if (transactionToSave.type === "income") {
         const newIncomeStatements = [...incomeStatements, transactionToSave];
         setIncomeStatements(newIncomeStatements);
-        setAllIncomeStatements(newIncomeStatements);
+        setDefaultIncomeStatements(newIncomeStatements);
       } else {
         const newExpenseStatements = [...expenseStatements, transactionToSave];
         setExpenseStatements(newExpenseStatements);
-        setAllExpenseStatements(newExpenseStatements);
+        setDefaultExpenseStatements(newExpenseStatements);
       }
     }
   }
@@ -50,13 +50,13 @@ export default function TrackerApp() {
         (transaction) => transaction.id !== transactionId
       );
       setIncomeStatements(updatedIncomeStatements);
-      setAllIncomeStatements(updatedIncomeStatements);
+      setDefaultIncomeStatements(updatedIncomeStatements);
     } else {
       const updatedExpenseStatements = expenseStatements.filter(
         (transaction) => transaction.id !== transactionId
       );
       setExpenseStatements(updatedExpenseStatements);
-      setAllExpenseStatements(updatedExpenseStatements);
+      setDefaultExpenseStatements(updatedExpenseStatements);
     }
   }
 
@@ -69,26 +69,34 @@ export default function TrackerApp() {
   }
 
   function handleIncomeSort(sortOrder) {
-    const sortedIncomeStatements = sortTransactions(
-      incomeStatements,
-      sortOrder === "lowToHigh" ? "asc" : "desc"
-    );
-    setIncomeStatements(sortedIncomeStatements);
+    if (!sortOrder) {
+      setIncomeStatements(defaultIncomeStatements);
+    } else {
+      const sortedIncomeStatements = sortTransactions(
+        incomeStatements,
+        sortOrder === "lowToHigh" ? "asc" : "desc"
+      );
+      setIncomeStatements(sortedIncomeStatements);
+    }
   }
 
   function handleExpenseSort(sortOrder) {
-    const sortedExpenseStatements = sortTransactions(
-      expenseStatements,
-      sortOrder === "lowToHigh" ? "asc" : "desc"
-    );
-    setExpenseStatements(sortedExpenseStatements);
+    if (!sortOrder) {
+      setExpenseStatements(defaultExpenseStatements);
+    } else {
+      const sortedExpenseStatements = sortTransactions(
+        expenseStatements,
+        sortOrder === "lowToHigh" ? "asc" : "desc"
+      );
+      setExpenseStatements(sortedExpenseStatements);
+    }
   }
 
   function handleIncomeFilter(checkedIncomeCategories) {
     if (checkedIncomeCategories.length === 0) {
-      setIncomeStatements(allIncomeStatements); // Reset if no filter selected
+      setIncomeStatements(defaultIncomeStatements);
     } else {
-      const filteredIncome = allIncomeStatements.filter((transaction) =>
+      const filteredIncome = defaultIncomeStatements.filter((transaction) =>
         checkedIncomeCategories.includes(transaction.category)
       );
       setIncomeStatements(filteredIncome);
@@ -97,9 +105,9 @@ export default function TrackerApp() {
 
   function handleExpenseFilter(checkedExpenseCategories) {
     if (checkedExpenseCategories.length === 0) {
-      setExpenseStatements(allExpenseStatements); // Reset if no filter selected
+      setExpenseStatements(defaultExpenseStatements);
     } else {
-      const filteredExpense = allExpenseStatements.filter((transaction) =>
+      const filteredExpense = defaultExpenseStatements.filter((transaction) =>
         checkedExpenseCategories.includes(transaction.category)
       );
       setExpenseStatements(filteredExpense);
