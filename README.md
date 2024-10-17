@@ -1,8 +1,24 @@
-# React + Vite
+# Expense Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is a demo application created as per the Learn with Sumit requirement and using only useState hook.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Please follow the below instructions to run different branches of this repository in your machine:
+
+1. Clone this repository -
+   ```sh
+   git clone https://github.com/afzal6174/expense-tracker.git
+   ```
+2. Go to the cloned project directory
+   ```sh
+   cd expense-tracker
+   ```
+3. Install dependency of project
+   ```sh
+   npm i
+   ```
+4. Run project in dev mode
+   ```sh
+   npm run dev
+   ```
