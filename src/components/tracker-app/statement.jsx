@@ -77,7 +77,7 @@ export default function Statement({
               </Button>
             </div>
 
-            {showSortMenu && <SortingMenu onSort={onSort} />}
+            <SortingMenu onSort={onSort} showSortMenu={showSortMenu} />
           </div>
 
           <div className="relative inline-block text-left">
@@ -93,9 +93,11 @@ export default function Statement({
               </Button>
             </div>
 
-            {showFilterMenu && (
-              <FilterMenu items={categoriesMap[type]} onFilter={onFilter} />
-            )}
+            <FilterMenu
+              items={categoriesMap[type]}
+              onFilter={onFilter}
+              showFilterMenu={showFilterMenu}
+            />
           </div>
         </div>
       </div>
