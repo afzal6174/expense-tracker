@@ -129,6 +129,7 @@ export default function TrackerApp() {
         key={dataForEditing ? dataForEditing.id : "new"}
         onSave={handleSave}
         dataForEditing={dataForEditing}
+        setDataForEditing={setDataForEditing}
       />
       <div className="lg:col-span-2">
         <BalanceStats

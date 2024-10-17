@@ -1,3 +1,4 @@
+import Button from "@/components/ui/button";
 import Field from "@/components/ui/form-field";
 import InputDate from "@/components/ui/input-date";
 import InputNumber from "@/components/ui/input-number";
@@ -7,7 +8,11 @@ import { transactionTrackerFormFields } from "@/lib/data/form";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
-export default function TransactionTrackerForm({ onSave, dataForEditing }) {
+export default function TransactionTrackerForm({
+  onSave,
+  dataForEditing,
+  setDataForEditing,
+}) {
   const [transaction, setTransaction] = useState(
     dataForEditing || {
       id: crypto.randomUUID(),
@@ -27,6 +32,12 @@ export default function TransactionTrackerForm({ onSave, dataForEditing }) {
   function handleTabChange(tabType) {
     setActiveTab(tabType);
     setTransaction(reset(tabType));
+    setDataForEditing(null);
+  }
+
+  function handleBackOnEditing() {
+    setTransaction(reset(activeTab));
+    setDataForEditing(null);
   }
 
   function handleChange(e) {
@@ -159,13 +170,23 @@ export default function TransactionTrackerForm({ onSave, dataForEditing }) {
             );
           }
         })}
-
-        <button
-          type="submit"
-          className="mt-6 rounded-md bg-teal-600 px-8 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 w-full"
-        >
-          Save
-        </button>
+        <div className="flex gap-2 justify-between">
+          {dataForEditing && (
+            <Button
+              type="button"
+              onClick={handleBackOnEditing}
+              className="mt-6 rounded-md bg-gray-600 px-8 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 w-full"
+            >
+              Back
+            </Button>
+          )}
+          <button
+            type="submit"
+            className="mt-6 rounded-md bg-teal-600 px-8 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 w-full"
+          >
+            Save
+          </button>
+        </div>
       </form>
     </div>
   );
