@@ -131,7 +131,15 @@ export default function Statement({
                   className="hover:text-red-600"
                   role="button"
                   title="Delete"
-                  onClick={() => onDelete(transaction.id)}
+                  onClick={() => {
+                    if (
+                      confirm(
+                        `\nDo you want to delete ${transaction.category}: ${transaction.amount} in ${type}?`
+                      )
+                    ) {
+                      onDelete(transaction.id);
+                    }
+                  }}
                 >
                   <Bin />
                 </button>
