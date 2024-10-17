@@ -8,7 +8,7 @@ export default function FilterMenu({ items, onFilter }) {
     const { value } = e.target;
     const updatedCheckedItems = checkedItems.includes(value)
       ? checkedItems.filter((item) => item !== value)
-      : [...checkedItems, value]; // Add new checked item
+      : [...checkedItems, value];
 
     setCheckedItems(updatedCheckedItems);
     onFilter(updatedCheckedItems);

@@ -26,11 +26,7 @@ export default function TransactionTrackerForm({ onSave, dataForEditing }) {
 
   function handleTabChange(tabType) {
     setActiveTab(tabType);
-    setTransaction((prevTransaction) => ({
-      ...prevTransaction,
-      type: tabType,
-      category: "",
-    }));
+    setTransaction(reset(tabType));
   }
 
   function handleChange(e) {
@@ -41,14 +37,14 @@ export default function TransactionTrackerForm({ onSave, dataForEditing }) {
     });
   }
 
-  function reset() {
-    setTransaction({
+  function reset(tabType) {
+    return {
       id: crypto.randomUUID(),
-      type: activeTab,
+      type: tabType,
       category: "",
       amount: "",
       date: "",
-    });
+    };
   }
 
   return (
@@ -82,7 +78,7 @@ export default function TransactionTrackerForm({ onSave, dataForEditing }) {
         onSubmit={(e) => {
           e.preventDefault();
           onSave(transaction);
-          reset();
+          setTransaction(reset(activeTab));
         }}
       >
         {transactionTrackerFormFields.map((field) => {
