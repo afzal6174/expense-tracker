@@ -11,42 +11,19 @@ import { useState } from "react";
 export default function TransactionTrackerForm({
   onSave,
   dataForEditing,
-  setDataForEditing,
+  onEditEscape,
+  activeTab,
+  setActiveTab,
 }) {
-  const [transaction, setTransaction] = useState(
+  const [transactionForm, setTransactionForm] = useState(
     dataForEditing || {
       id: crypto.randomUUID(),
-      type: "expense",
+      type: activeTab,
       category: "",
       amount: "",
       date: "",
     }
   );
-  const [activeTab, setActiveTab] = useState(transaction.type);
-
-  const categoriesMap = {
-    income: incomeCategories,
-    expense: expenseCategories,
-  };
-
-  function handleTabChange(tabType) {
-    setActiveTab(tabType);
-    setTransaction(reset(tabType));
-    setDataForEditing(null);
-  }
-
-  function handleBackOnEditing() {
-    setTransaction(reset(activeTab));
-    setDataForEditing(null);
-  }
-
-  function handleChange(e) {
-    const { name, value } = e.target;
-    setTransaction({
-      ...transaction,
-      [name]: value,
-    });
-  }
 
   function reset(tabType) {
     return {
@@ -56,6 +33,30 @@ export default function TransactionTrackerForm({
       amount: "",
       date: "",
     };
+  }
+
+  const categoriesMap = {
+    income: incomeCategories,
+    expense: expenseCategories,
+  };
+
+  function handleTabChange(tabType) {
+    setActiveTab(tabType);
+    setTransactionForm(reset(tabType));
+    if (dataForEditing) onEditEscape();
+  }
+
+  function handleBackOnEditing() {
+    setTransactionForm(reset(activeTab));
+    onEditEscape();
+  }
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setTransactionForm({
+      ...transactionForm,
+      [name]: value,
+    });
   }
 
   return (
@@ -94,8 +95,8 @@ export default function TransactionTrackerForm({
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          onSave(transaction);
-          setTransaction(reset(activeTab));
+          onSave(transactionForm);
+          setTransactionForm(reset(activeTab));
         }}
       >
         {transactionTrackerFormFields.map((field) => {
@@ -112,7 +113,7 @@ export default function TransactionTrackerForm({
                   <Select
                     id={field.id}
                     name={field.name}
-                    value={transaction.category}
+                    value={transactionForm.category}
                     onChange={handleChange}
                     required
                     options={categoriesMap[activeTab]}
@@ -136,7 +137,7 @@ export default function TransactionTrackerForm({
                   <InputNumber
                     id={field.id}
                     name={field.name}
-                    value={transaction.amount}
+                    value={transactionForm.amount}
                     min="0"
                     onChange={handleChange}
                     required
@@ -160,7 +161,7 @@ export default function TransactionTrackerForm({
                   <InputDate
                     id={field.id}
                     name={field.name}
-                    value={transaction.date}
+                    value={transactionForm.date}
                     onChange={handleChange}
                     required
                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm sm:leading-6"

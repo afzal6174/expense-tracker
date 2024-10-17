@@ -9,6 +9,7 @@ export default function TrackerApp() {
   const [expenseStatements, setExpenseStatements] = useState([]);
   const [defaultIncomeStatements, setDefaultIncomeStatements] = useState([]);
   const [defaultExpenseStatements, setDefaultExpenseStatements] = useState([]);
+  const [activeTab, setActiveTab] = useState("expense");
 
   function handleSave(transactionToSave) {
     if (dataForEditing) {
@@ -58,6 +59,11 @@ export default function TrackerApp() {
       setExpenseStatements(updatedExpenseStatements);
       setDefaultExpenseStatements(updatedExpenseStatements);
     }
+  }
+
+  function handleEdit(transaction) {
+    setDataForEditing(transaction);
+    setActiveTab(transaction.type);
   }
 
   function sortTransactions(arr, order = "asc") {
@@ -114,6 +120,10 @@ export default function TrackerApp() {
     }
   }
 
+  function handleEditEscape() {
+    setDataForEditing(null);
+  }
+
   const totalIncomeAmount = incomeStatements.reduce(
     (total, transaction) => total + Number(transaction.amount),
     0
@@ -129,7 +139,9 @@ export default function TrackerApp() {
         key={dataForEditing ? dataForEditing.id : "new"}
         onSave={handleSave}
         dataForEditing={dataForEditing}
-        setDataForEditing={setDataForEditing}
+        activeTab={activeTab} // Pass activeTab as a prop
+        setActiveTab={setActiveTab}
+        onEditEscape={handleEditEscape}
       />
       <div className="lg:col-span-2">
         <BalanceStats
@@ -142,7 +154,7 @@ export default function TrackerApp() {
             title="Income"
             type="income"
             statement={incomeStatements}
-            onEdit={(transaction) => setDataForEditing(transaction)}
+            onEdit={handleEdit}
             onDelete={(transactionId) => handleDelete(transactionId, "income")}
             onSort={handleIncomeSort}
             onFilter={handleIncomeFilter}
@@ -151,7 +163,7 @@ export default function TrackerApp() {
             title="Expense"
             type="expense"
             statement={expenseStatements}
-            onEdit={(transaction) => setDataForEditing(transaction)}
+            onEdit={handleEdit}
             onDelete={(transactionId) => handleDelete(transactionId, "expense")}
             onSort={handleExpenseSort}
             onFilter={handleExpenseFilter}
