@@ -59,7 +59,10 @@ export default function TransactionTrackerForm({ onSave, dataForEditing }) {
             "cursor-pointer text-center flex-1 px-4 py-2 hover:bg-slate-50 hover:text-slate-900",
             activeTab === "expense" ? "active" : null
           )}
-          onClick={() => handleTabChange("expense")}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleTabChange("expense");
+          }}
         >
           Expense
         </div>
@@ -68,7 +71,10 @@ export default function TransactionTrackerForm({ onSave, dataForEditing }) {
             "cursor-pointer text-center flex-1 px-4 py-2 hover:bg-slate-50 hover:text-slate-900",
             activeTab === "income" ? "active" : null
           )}
-          onClick={() => handleTabChange("income")}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleTabChange("income");
+          }}
         >
           Income
         </div>

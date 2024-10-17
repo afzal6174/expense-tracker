@@ -6,6 +6,7 @@ import FilterMenu from "@/components/tracker-app/filter-menu";
 import NotFound from "@/components/tracker-app/not-found";
 import SortingMenu from "@/components/tracker-app/sorting-menu";
 import StatementData from "@/components/tracker-app/statement-data";
+import Button from "@/components/ui/button";
 import { expenseCategories, incomeCategories } from "@/lib/data/categories";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
@@ -65,7 +66,7 @@ export default function Statement({
         <div className="flex gap-1">
           <div className="relative inline-block text-left">
             <div>
-              <button
+              <Button
                 type="button"
                 className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                 aria-expanded={showSortMenu}
@@ -73,7 +74,7 @@ export default function Statement({
                 onClick={handleShowSortMenu}
               >
                 <Sort className="icon icon-tabler icons-tabler-outline icon-tabler-sort-descending" />
-              </button>
+              </Button>
             </div>
 
             {showSortMenu && <SortingMenu onSort={onSort} />}
@@ -81,7 +82,7 @@ export default function Statement({
 
           <div className="relative inline-block text-left">
             <div>
-              <button
+              <Button
                 type="button"
                 className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
                 aria-expanded={showFilterMenu}
@@ -89,7 +90,7 @@ export default function Statement({
                 onClick={handleShowFilterMenu}
               >
                 <Filter className="icon icon-tabler icons-tabler-outline icon-tabler-adjustments-alt" />
-              </button>
+              </Button>
             </div>
 
             {showFilterMenu && (

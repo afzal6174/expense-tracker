@@ -1,5 +1,6 @@
 import Bin from "@/components/icons/bin";
 import Pencil from "@/components/icons/pencil";
+import Button from "@/components/ui/button";
 import { formatDateToLocal } from "@/lib/utils";
 
 export default function StatementData({ transaction, onEdit, onDelete }) {
@@ -18,16 +19,16 @@ export default function StatementData({ transaction, onEdit, onDelete }) {
           BDT {transaction.amount}
         </p>
         <div className="translate-x-5 group-hover:translate-x-0 opacity-0 group-hover:opacity-100 absolute right-0 top-1/2 -translate-y-1/2 transition-all flex gap-1">
-          <button
+          <Button
             className="hover:text-teal-600"
             role="button"
             title="Edit Button"
             onClick={() => onEdit(transaction)}
           >
             <Pencil />
-          </button>
+          </Button>
 
-          <button
+          <Button
             className="hover:text-red-600"
             role="button"
             title="Delete"
@@ -42,7 +43,7 @@ export default function StatementData({ transaction, onEdit, onDelete }) {
             }}
           >
             <Bin />
-          </button>
+          </Button>
         </div>
       </div>
     </div>

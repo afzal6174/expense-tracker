@@ -27,7 +27,10 @@ export default function SortingMenu({ onSort }) {
           )}
           role="menuitem"
           tabIndex="-1"
-          onClick={() => handleClick("lowToHigh")}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClick("lowToHigh");
+          }}
         >
           Low to High
         </a>
@@ -39,7 +42,10 @@ export default function SortingMenu({ onSort }) {
           )}
           role="menuitem"
           tabIndex="-1"
-          onClick={() => handleClick("highToLow")}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleClick("highToLow");
+          }}
         >
           High to Low
         </a>
