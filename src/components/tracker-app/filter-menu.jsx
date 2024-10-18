@@ -1,19 +1,11 @@
 import InputCheckbox from "@/components/ui/input-checkbox";
-import { useState } from "react";
 
-export default function FilterMenu({ items, onFilter, showFilterMenu }) {
-  const [checkedItems, setCheckedItems] = useState([]);
-
-  function handleChange(e) {
-    const { value } = e.target;
-    const updatedCheckedItems = checkedItems.includes(value)
-      ? checkedItems.filter((item) => item !== value)
-      : [...checkedItems, value];
-
-    setCheckedItems(updatedCheckedItems);
-    onFilter(updatedCheckedItems);
-  }
-
+export default function FilterMenu({
+  items,
+  onFilter,
+  showFilterMenu,
+  checkedItems,
+}) {
   return (
     <>
       {showFilterMenu && (
@@ -34,7 +26,7 @@ export default function FilterMenu({ items, onFilter, showFilterMenu }) {
                   id={item}
                   name={item}
                   value={item}
-                  onChange={handleChange}
+                  onChange={() => onFilter(item)}
                   checked={checkedItems.includes(item)}
                   className="h-4 w-4 rounded-md text-gray-600"
                 />

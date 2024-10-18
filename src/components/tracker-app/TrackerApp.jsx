@@ -10,38 +10,42 @@ export default function TrackerApp() {
   const [defaultIncomeStatements, setDefaultIncomeStatements] = useState([]);
   const [defaultExpenseStatements, setDefaultExpenseStatements] = useState([]);
   const [activeTab, setActiveTab] = useState("expense");
+  const [checkedIncomeCategories, setCheckedIncomeCategories] = useState([]);
+  const [checkedExpenseCategories, setCheckedExpenseCategories] = useState([]);
+  const [activeIncomeSort, setActiveIncomeSort] = useState(null);
+  const [activeExpenseSort, setActiveExpenseSort] = useState(null);
 
   function handleSave(transactionToSave) {
+    const isIncome = transactionToSave.type === "income";
+    const defaultStatements = isIncome
+      ? defaultIncomeStatements
+      : defaultExpenseStatements;
+    const setStatements = isIncome ? setIncomeStatements : setExpenseStatements;
+    const setDefaultStatements = isIncome
+      ? setDefaultIncomeStatements
+      : setDefaultExpenseStatements;
+    const setActiveSort = isIncome ? setActiveIncomeSort : setActiveExpenseSort;
+    const setCheckedCategories = isIncome
+      ? setCheckedIncomeCategories
+      : setCheckedExpenseCategories;
+
+    setActiveSort(null);
+    setCheckedCategories([]);
+
     if (dataForEditing) {
-      if (transactionToSave.type === "income") {
-        const updatedIncomeStatements = incomeStatements.map((oldTransaction) =>
-          oldTransaction.id === transactionToSave.id
-            ? transactionToSave
-            : oldTransaction
-        );
-        setIncomeStatements(updatedIncomeStatements);
-        setDefaultIncomeStatements(updatedIncomeStatements);
-      } else {
-        const updatedExpenseStatements = expenseStatements.map(
-          (oldTransaction) =>
-            oldTransaction.id === transactionToSave.id
-              ? transactionToSave
-              : oldTransaction
-        );
-        setExpenseStatements(updatedExpenseStatements);
-        setDefaultExpenseStatements(updatedExpenseStatements);
-      }
+      const updatedStatements = defaultStatements.map((oldTransaction) =>
+        oldTransaction.id === transactionToSave.id
+          ? transactionToSave
+          : oldTransaction
+      );
+      setStatements(updatedStatements);
+      setDefaultStatements(updatedStatements);
+
       setDataForEditing(null);
     } else {
-      if (transactionToSave.type === "income") {
-        const newIncomeStatements = [...incomeStatements, transactionToSave];
-        setIncomeStatements(newIncomeStatements);
-        setDefaultIncomeStatements(newIncomeStatements);
-      } else {
-        const newExpenseStatements = [...expenseStatements, transactionToSave];
-        setExpenseStatements(newExpenseStatements);
-        setDefaultExpenseStatements(newExpenseStatements);
-      }
+      const newStatements = [...defaultStatements, transactionToSave];
+      setStatements(newStatements);
+      setDefaultStatements(newStatements);
     }
   }
 
@@ -74,90 +78,82 @@ export default function TrackerApp() {
     });
   }
 
-  function handleIncomeSort(sortOrder = null, checkedIncomeCategories = []) {
-    if (!sortOrder && checkedIncomeCategories.length === 0) {
+  function handleIncomeSort(sortOrder) {
+    const newActiveIncomeSort =
+      activeIncomeSort === sortOrder ? null : sortOrder;
+    setActiveIncomeSort(newActiveIncomeSort);
+
+    if (!newActiveIncomeSort) {
       setIncomeStatements(defaultIncomeStatements);
+      setCheckedIncomeCategories([]);
     } else {
-      let sortedIncomeStatements = incomeStatements;
-
-      if (checkedIncomeCategories.length > 0) {
-        sortedIncomeStatements = defaultIncomeStatements.filter((transaction) =>
-          checkedIncomeCategories.includes(transaction.category)
-        );
-      }
-
-      if (sortOrder) {
-        sortedIncomeStatements = sortTransactions(
-          sortedIncomeStatements,
-          sortOrder === "lowToHigh" ? "asc" : "desc"
-        );
-      }
-
+      const sortedIncomeStatements = sortTransactions(
+        incomeStatements,
+        sortOrder === "lowToHigh" ? "asc" : "desc"
+      );
       setIncomeStatements(sortedIncomeStatements);
     }
   }
 
-  function handleExpenseSort(sortOrder = null, checkedExpenseCategories = []) {
-    if (!sortOrder && checkedExpenseCategories.length === 0) {
+  function handleExpenseSort(sortOrder) {
+    const newActiveExpenseSort =
+      activeExpenseSort === sortOrder ? null : sortOrder;
+    setActiveExpenseSort(newActiveExpenseSort);
+
+    if (!newActiveExpenseSort) {
       setExpenseStatements(defaultExpenseStatements);
+      setCheckedExpenseCategories([]);
     } else {
-      let sortedExpenseStatements = expenseStatements;
-
-      if (checkedExpenseCategories.length > 0) {
-        sortedExpenseStatements = defaultExpenseStatements.filter(
-          (transaction) =>
-            checkedExpenseCategories.includes(transaction.category)
-        );
-      }
-
-      if (sortOrder) {
-        sortedExpenseStatements = sortTransactions(
-          sortedExpenseStatements,
-          sortOrder === "lowToHigh" ? "asc" : "desc"
-        );
-      }
-
+      const sortedExpenseStatements = sortTransactions(
+        expenseStatements,
+        sortOrder === "lowToHigh" ? "asc" : "desc"
+      );
       setExpenseStatements(sortedExpenseStatements);
     }
   }
 
-  function handleIncomeFilter(checkedIncomeCategories = [], sortOrder = null) {
-    if (checkedIncomeCategories.length === 0 && !sortOrder) {
-      setIncomeStatements(defaultIncomeStatements);
+  function insertcheckedCategories(newCategory, type) {
+    if (type === "income") {
+      const updatedCategories = checkedIncomeCategories.includes(newCategory)
+        ? checkedIncomeCategories.filter((category) => category !== newCategory)
+        : [...checkedIncomeCategories, newCategory];
+
+      setCheckedIncomeCategories(updatedCategories);
+      handleIncomeFilter(updatedCategories);
     } else {
-      let filteredIncome = defaultIncomeStatements.filter((transaction) =>
-        checkedIncomeCategories.includes(transaction.category)
-      );
+      if (type === "expense") {
+        const updatedCategories = checkedExpenseCategories.includes(newCategory)
+          ? checkedExpenseCategories.filter(
+              (category) => category !== newCategory
+            )
+          : [...checkedExpenseCategories, newCategory];
 
-      if (sortOrder) {
-        filteredIncome = sortTransactions(
-          filteredIncome,
-          sortOrder === "lowToHigh" ? "asc" : "desc"
-        );
+        setCheckedExpenseCategories(updatedCategories);
+        handleExpenseFilter(updatedCategories);
       }
+    }
+  }
 
+  function handleIncomeFilter(categories) {
+    if (categories.length === 0) {
+      setIncomeStatements(defaultIncomeStatements);
+      setActiveIncomeSort(null);
+    } else {
+      const filteredIncome = defaultIncomeStatements.filter((transaction) =>
+        categories.includes(transaction.category)
+      );
       setIncomeStatements(filteredIncome);
     }
   }
 
-  function handleExpenseFilter(
-    checkedExpenseCategories = [],
-    sortOrder = null
-  ) {
-    if (checkedExpenseCategories.length === 0 && !sortOrder) {
+  function handleExpenseFilter(categories) {
+    if (categories.length === 0) {
       setExpenseStatements(defaultExpenseStatements);
+      setActiveExpenseSort(null);
     } else {
-      let filteredExpense = defaultExpenseStatements.filter((transaction) =>
-        checkedExpenseCategories.includes(transaction.category)
+      const filteredExpense = defaultExpenseStatements.filter((transaction) =>
+        categories.includes(transaction.category)
       );
-
-      if (sortOrder) {
-        filteredExpense = sortTransactions(
-          filteredExpense,
-          sortOrder === "lowToHigh" ? "asc" : "desc"
-        );
-      }
-
       setExpenseStatements(filteredExpense);
     }
   }
@@ -181,7 +177,7 @@ export default function TrackerApp() {
         key={dataForEditing ? dataForEditing.id : "new"}
         onSave={handleSave}
         dataForEditing={dataForEditing}
-        activeTab={activeTab} // Pass activeTab as a prop
+        activeTab={activeTab}
         setActiveTab={setActiveTab}
         onEditEscape={handleEditEscape}
       />
@@ -199,7 +195,9 @@ export default function TrackerApp() {
             onEdit={handleEdit}
             onDelete={(transactionId) => handleDelete(transactionId, "income")}
             onSort={handleIncomeSort}
-            onFilter={handleIncomeFilter}
+            onFilter={(category) => insertcheckedCategories(category, "income")}
+            checkedItems={checkedIncomeCategories}
+            activeSort={activeIncomeSort}
           />
           <Statement
             title="Expense"
@@ -208,7 +206,11 @@ export default function TrackerApp() {
             onEdit={handleEdit}
             onDelete={(transactionId) => handleDelete(transactionId, "expense")}
             onSort={handleExpenseSort}
-            onFilter={handleExpenseFilter}
+            onFilter={(category) =>
+              insertcheckedCategories(category, "expense")
+            }
+            checkedItems={checkedExpenseCategories}
+            activeSort={activeExpenseSort}
           />
         </div>
       </div>

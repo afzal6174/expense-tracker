@@ -28,6 +28,8 @@ export default function Statement({
   onDelete,
   onSort,
   onFilter,
+  checkedItems,
+  activeSort,
 }) {
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [showFilterMenu, setShowFilterMenu] = useState(false);
@@ -77,7 +79,11 @@ export default function Statement({
               </Button>
             </div>
 
-            <SortingMenu onSort={onSort} showSortMenu={showSortMenu} />
+            <SortingMenu
+              onSort={onSort}
+              showSortMenu={showSortMenu}
+              activeSort={activeSort}
+            />
           </div>
 
           <div className="relative inline-block text-left">
@@ -97,6 +103,7 @@ export default function Statement({
               items={categoriesMap[type]}
               onFilter={onFilter}
               showFilterMenu={showFilterMenu}
+              checkedItems={checkedItems || []}
             />
           </div>
         </div>
