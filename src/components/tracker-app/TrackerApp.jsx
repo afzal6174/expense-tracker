@@ -74,48 +74,90 @@ export default function TrackerApp() {
     });
   }
 
-  function handleIncomeSort(sortOrder) {
-    if (!sortOrder) {
+  function handleIncomeSort(sortOrder = null, checkedIncomeCategories = []) {
+    if (!sortOrder && checkedIncomeCategories.length === 0) {
       setIncomeStatements(defaultIncomeStatements);
     } else {
-      const sortedIncomeStatements = sortTransactions(
-        incomeStatements,
-        sortOrder === "lowToHigh" ? "asc" : "desc"
-      );
+      let sortedIncomeStatements = incomeStatements;
+
+      if (checkedIncomeCategories.length > 0) {
+        sortedIncomeStatements = defaultIncomeStatements.filter((transaction) =>
+          checkedIncomeCategories.includes(transaction.category)
+        );
+      }
+
+      if (sortOrder) {
+        sortedIncomeStatements = sortTransactions(
+          sortedIncomeStatements,
+          sortOrder === "lowToHigh" ? "asc" : "desc"
+        );
+      }
+
       setIncomeStatements(sortedIncomeStatements);
     }
   }
 
-  function handleExpenseSort(sortOrder) {
-    if (!sortOrder) {
+  function handleExpenseSort(sortOrder = null, checkedExpenseCategories = []) {
+    if (!sortOrder && checkedExpenseCategories.length === 0) {
       setExpenseStatements(defaultExpenseStatements);
     } else {
-      const sortedExpenseStatements = sortTransactions(
-        expenseStatements,
-        sortOrder === "lowToHigh" ? "asc" : "desc"
-      );
+      let sortedExpenseStatements = expenseStatements;
+
+      if (checkedExpenseCategories.length > 0) {
+        sortedExpenseStatements = defaultExpenseStatements.filter(
+          (transaction) =>
+            checkedExpenseCategories.includes(transaction.category)
+        );
+      }
+
+      if (sortOrder) {
+        sortedExpenseStatements = sortTransactions(
+          sortedExpenseStatements,
+          sortOrder === "lowToHigh" ? "asc" : "desc"
+        );
+      }
+
       setExpenseStatements(sortedExpenseStatements);
     }
   }
 
-  function handleIncomeFilter(checkedIncomeCategories) {
-    if (checkedIncomeCategories.length === 0) {
+  function handleIncomeFilter(checkedIncomeCategories = [], sortOrder = null) {
+    if (checkedIncomeCategories.length === 0 && !sortOrder) {
       setIncomeStatements(defaultIncomeStatements);
     } else {
-      const filteredIncome = defaultIncomeStatements.filter((transaction) =>
+      let filteredIncome = defaultIncomeStatements.filter((transaction) =>
         checkedIncomeCategories.includes(transaction.category)
       );
+
+      if (sortOrder) {
+        filteredIncome = sortTransactions(
+          filteredIncome,
+          sortOrder === "lowToHigh" ? "asc" : "desc"
+        );
+      }
+
       setIncomeStatements(filteredIncome);
     }
   }
 
-  function handleExpenseFilter(checkedExpenseCategories) {
-    if (checkedExpenseCategories.length === 0) {
+  function handleExpenseFilter(
+    checkedExpenseCategories = [],
+    sortOrder = null
+  ) {
+    if (checkedExpenseCategories.length === 0 && !sortOrder) {
       setExpenseStatements(defaultExpenseStatements);
     } else {
-      const filteredExpense = defaultExpenseStatements.filter((transaction) =>
+      let filteredExpense = defaultExpenseStatements.filter((transaction) =>
         checkedExpenseCategories.includes(transaction.category)
       );
+
+      if (sortOrder) {
+        filteredExpense = sortTransactions(
+          filteredExpense,
+          sortOrder === "lowToHigh" ? "asc" : "desc"
+        );
+      }
+
       setExpenseStatements(filteredExpense);
     }
   }
